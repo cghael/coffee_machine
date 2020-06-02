@@ -1,22 +1,16 @@
-water = 400
-milk = 540
-gr = 120
-cups = 9
-money = 550
+# resources: water, milk, coffee_beans, cups, money
+resources = [["water", 400], ["milk", 540], ["coffee beans", 120], ["disposable cups", 9], ["money", 550]]
+# coffee: [espresso, latte, cappuccino]
+coffee = [[-250, 0, -16, 4], [-350, -75, -20, 7], [-200, -100, -12, +6]]
 
 
 def status_inf():
-    global water
-    global milk
-    global gr
-    global cups
-    global money
-    print("The coffee machine has:")
-    print(water, "of water")
-    print(milk, "of milk")
-    print(gr, "of coffee beans")
-    print(cups, "of disposable cups")
-    print(money, "of money")
+    print("\nThe coffee machine has:")
+    for i in range(5):
+        if i == 4:
+            print("$" + str(resources[i][1]), "of", resources[i][0])
+        else:
+            print(resources[i][1], "of", resources[i][0])
 
 
 def find_min_cups(water, milk, gr, cups):
@@ -30,66 +24,60 @@ def find_min_cups(water, milk, gr, cups):
     return min_cups
 
 
+def ft_check_supl(choose):
+    errors = 0
+    if resources[0][1] < -coffee[choose][0]:
+        print("Sorry, not enough", resources[0][0] + "!")
+        errors += 1
+    elif resources[1][1] < -coffee[choose][1]:
+        print("Sorry, not enough", resources[1][0] + "!")
+        errors += 1
+    elif resources[2][1] < -coffee[choose][2]:
+        print("Sorry, not enough", resources[2][0] + "!")
+        errors += 1
+    elif resources[3][1] < 1:
+        print("Sorry, not enough", resources[3][0] + "!")
+        errors += 1
+    return errors
+
+
 def ft_buy():
-    global water
-    global milk
-    global gr
-    global cups
-    global money
-    choose = int(input("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:"))
-    if choose == 1:
-        water -= 250
-        gr -= 16
-        cups -= 1
-        money += 4
-    elif choose == 2:
-        water -= 350
-        milk -= 75
-        gr -= 20
-        cups -= 1
-        money += 7
-    else:
-        water -= 200
-        milk -= 100
-        gr -= 12
-        cups -= 1
-        money += 6
+    global resources
+    choose = input("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu: ")
+    if choose == "back":
+        return
+    choose = int(choose) - 1
+    if ft_check_supl(choose) == 0:
+        resources[0][1] += coffee[choose][0]
+        resources[1][1] += coffee[choose][1]
+        resources[2][1] += coffee[choose][2]
+        resources[3][1] += -1
+        resources[4][1] += coffee[choose][3]
+        print("I have enough resources, making you a coffee!")
 
 
 def ft_fill():
-    global water
-    global milk
-    global gr
-    global cups
-    global money
-    water += int(input("Write how many ml of water do you want to add:"))
-    milk += int(input("Write how many ml of milk do you want to add:"))
-    gr += int(input("Write how many grams of coffee beans do you want to add:"))
-    cups += int(input("Write how many disposable cups of coffee do you want to add:"))
+    global resources
+    resources[0][1] += int(input("Write how many ml of water do you want to add: "))
+    resources[1][1] += int(input("Write how many ml of milk do you want to add: "))
+    resources[2][1] += int(input("Write how many grams of coffee beans do you want to add: "))
+    resources[3][1] += int(input("Write how many disposable cups of coffee do you want to add: "))
 
 
 def ft_take():
-    global money
-    print("I gave you $" + str(money))
-    money = 0
+    global resources
+    print("I gave you $" + str(resources[4][1]))
+    resources[4][1] = 0
 
 
-status_inf()
-action = input("Write action (buy, fill, take): ")
-if action == "buy":
-    ft_buy()
-elif action == "fill":
-    ft_fill()
-else:
-    ft_take()
-status_inf()
-
-"""
-min_cups = find_min_cups(water, milk, gr, cups)
-if min_cups < cups:
-    print("No, I can make only", min_cups, "cups of coffee")
-elif min_cups == cups:
-    print("Yes, I can make that amount of coffee")
-else:
-    print("Yes, I can make that amount of coffee (and even", min_cups - cups, "more than that)")
-"""
+action = input("Write action (buy, fill, take, remaining, exit): ")
+while action != "exit":
+    if action == "buy":
+        ft_buy()
+    elif action == "fill":
+        ft_fill()
+    elif action == "take":
+        ft_take()
+    elif action == "remaining":
+        status_inf()
+    action = input("\nWrite action (buy, fill, take, remaining, exit): ")
