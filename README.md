@@ -9,7 +9,7 @@ This project allows you to get a taste of Python. Practice working with function
 ### Example 1:
 
 '''
-Write action (buy, fill, take, remaining, exit):
+  Write action (buy, fill, take, remaining, exit):
 > remaining
  
 The coffee machine has:
